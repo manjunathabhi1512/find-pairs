@@ -1,20 +1,33 @@
 package main
 
 import (
-	"test/handler"
-	"test/repository"
-	"test/service"
+	"context"
+	"log"
+	"net"
+	"google.golang.org/grpc"
 
-	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
+	helloworldpb "./protos/helloworld"
 )
+type server struct{
+	helloworldpb.UnimplementedGreeterServer
+}
+
+func NewServer() *server {
+	return &server{}
+}
+
+func (s *server) SayHello(ctx context.Context, in *helloworldpb.HelloRequest) (*helloworldpb.HelloReply, error) {
+	return &helloworldpb.HelloReply{Message: in.Name + " world"}, nil
+}
 
 func main() {
-	commonRepo := repository.NewCommonRepo(&gorm.DB{})
-	commonService := service.NewCommonService(commonRepo)
-	commonHandler := handler.NewCommonHandler(commonService)
+	lis, err := net.Listen("tcp", ":8080")
+	if err != nil {
+		log.Fatalln("Failed to listen:", err)
+	}
 
-	r := gin.Default()
-	r.POST("/find-pairs", commonHandler.Task1Handler)
-	r.Run(":5000")
+	s := grpc.NewServer()
+	helloworldpb.RegisterGreeterServer(s, &server{})
+	log.Println("Serving gRPC on 0.0.0.0:8080")
+	log.Fatal(s.Serve(lis))
 }
