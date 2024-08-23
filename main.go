@@ -6,7 +6,7 @@ import (
 	"net"
 	"google.golang.org/grpc"
 
-	helloworldpb "./protos/helloworld"
+	helloworldpb "github.com/manjunathabhi1512/find-pairs/helloworld"
 )
 type server struct{
 	helloworldpb.UnimplementedGreeterServer

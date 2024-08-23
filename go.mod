@@ -6,7 +6,7 @@ require (
 	github.com/gin-gonic/gin v1.10.0
 	gorm.io/gorm v1.25.11
 )
-
+require github.com/manjunathabhi1512/find-pairs v0.0.1
 require google.golang.org/genproto/googleapis/rpc v0.0.0-20240528184218-531527333157 // indirect
 
 require (
